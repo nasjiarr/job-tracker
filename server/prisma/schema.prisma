@@ -1,0 +1,45 @@
+// Prisma schema for Job Application Tracker & Career CRM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model JobApplication {
+  id             Int                   @id @default(autoincrement())
+  companyName    String
+  roleTitle      String
+  jobType        String
+  workMode       String
+  location       String?
+  status         String
+  priority       String
+  salaryMin      Float?
+  salaryMax      Float?
+  currency       String                @default("IDR")
+  jobUrl         String?
+  cvVersion      String?
+  appliedDate    DateTime?
+  followUpDate   DateTime?
+  contactPerson  String?
+  contactChannel String?
+  notes          String?
+  positionOrder  Int                   @default(0)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  timelines      ApplicationTimeline[]
+}
+
+model ApplicationTimeline {
+  id               Int            @id @default(autoincrement())
+  jobApplicationId Int
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  fromStatus       String?
+  toStatus         String
+  note             String?
+  eventDate        DateTime       @default(now())
+}
